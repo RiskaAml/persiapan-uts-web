@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rentopia — P2P Rental Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body id="app-root">
+
+  <!-- PAGE: LOGIN -->
+  <section id="page-login" class="page-view">
+    <div class="auth-split">
+      <div class="auth-brand">
+        <div class="brand-mark">R.</div>
+        <h1 class="brand-tagline">Sewa apa saja.<br>Dari siapa saja.</h1>
+        <p class="brand-sub">Platform rental peer-to-peer untuk peralatan outdoor terpercaya.</p>
+        <div class="brand-stats">
+          <div class="bstat"><span>2.4k+</span>Barang</div>
+          <div class="bstat"><span>890</span>Penyewa</div>
+          <div class="bstat"><span>4.9★</span>Rating</div>
+        </div>
+      </div>
+      <div class="auth-form-wrap">
+        <div class="auth-card">
+          <h2>Masuk</h2>
+          <p class="auth-hint">Belum punya akun? <a data-action="go-signup">Daftar gratis</a></p>
+          <div class="field-group">
+            <label for="login-user">Username</label>
+            <input type="text" id="login-user" placeholder="username kamu" autocomplete="username" />
+          </div>
+          <div class="field-group">
+            <label for="login-pass">Password</label>
+            <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" />
+          </div>
+          <div id="login-error" class="form-error hidden"></div>
+          <button class="btn btn-primary" data-action="do-login">Masuk Sekarang →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE: SIGNUP -->
+  <section id="page-signup" class="page-view hidden">
+    <div class="auth-split">
+      <div class="auth-brand">
+        <div class="brand-mark">R.</div>
+        <h1 class="brand-tagline">Bergabung<br>sekarang.</h1>
+        <p class="brand-sub">Mulai sewa atau sewakan barangmu dalam 60 detik.</p>
+      </div>
+      <div class="auth-form-wrap">
+        <div class="auth-card">
+          <button class="btn-ghost" data-action="go-login">← Kembali</button>
+          <h2>Buat Akun</h2>
+          <div class="field-group">
+            <label for="reg-user">Username</label>
+            <input type="text" id="reg-user" placeholder="pilih username unik" autocomplete="username" />
+          </div>
+          <div class="field-group">
+            <label for="reg-pass">Password</label>
+            <input type="password" id="reg-pass" placeholder="min. 6 karakter" autocomplete="new-password" />
+          </div>
+          <div class="field-group">
+            <label for="reg-location">Kota</label>
+            <input type="text" id="reg-location" placeholder="Contoh: Surabaya" />
+          </div>
+          <div id="signup-error" class="form-error hidden"></div>
+          <button class="btn btn-primary" data-action="do-signup">Buat Akun →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE: PROFILE (main dashboard) -->
+  <section id="page-profile" class="page-view hidden">
+    <header class="top-bar">
+      <div class="top-bar-brand">R.</div>
+      <nav class="top-bar-nav">
+        <button class="btn-ghost" data-action="open-edit">Edit Profil</button>
+        <button class="btn-ghost" data-action="export-csv">Export CSV</button>
+        <button class="btn-danger-ghost" data-action="logout">Keluar</button>
+      </nav>
+    </header>
+
+    <div class="profile-hero">
+      <div class="avatar-wrap">
+        <div class="avatar" id="profile-avatar">
+          <span id="avatar-initials">?</span>
+          <img id="avatar-img" class="hidden" alt="avatar" />
+        </div>
+        <label class="avatar-upload-btn" title="Ganti foto">
+          <input type="file" id="avatar-file" accept="image/png,image/jpeg" class="hidden" data-action="upload-avatar" />
+          +
+        </label>
+      </div>
+      <div class="profile-info">
+        <h2 id="display-name">—</h2>
+        <p id="display-location" class="profile-location">📍 —</p>
+        <p id="display-desc" class="profile-desc">—</p>
+      </div>
+      <div class="profile-stats">
+        <div class="pstat" id="stat-listings"><span>0</span>Listing</div>
+        <div class="pstat overdue-stat hidden" id="stat-overdue"><span>0</span>Overdue</div>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab active" data-tab="listing">My Listing</button>
+      <button class="tab" data-tab="rent">My Rent</button>
+    </div>
+
+    <!-- LISTING TAB -->
+    <div id="tab-listing">
+      <div class="section-header">
+        <h3>Barang Saya</h3>
+        <button class="btn btn-primary btn-sm" data-action="go-add">+ Tambah Barang</button>
+      </div>
+      <div id="listing-grid" class="item-grid"></div>
+      <div id="listing-empty" class="empty-state">
+        <div class="empty-icon">📦</div>
+        <p>Belum ada barang. Mulai tambahkan!</p>
+      </div>
+    </div>
+
+    <!-- RENT TAB -->
+    <div id="tab-rent" class="hidden">
+      <div class="section-header">
+        <h3>Barang yang Saya Sewa</h3>
+        <button class="btn btn-primary btn-sm" data-action="go-rent">+ Sewa Barang</button>
+      </div>
+      <div id="rent-grid" class="item-grid"></div>
+      <div id="rent-empty" class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <p>Belum ada transaksi sewa.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE: EDIT PROFILE -->
+  <section id="page-edit" class="page-view hidden">
+    <div class="form-page">
+      <button class="btn-ghost" data-action="go-profile">← Kembali</button>
+      <h2>Edit Profil</h2>
+      <div class="field-group">
+        <label for="input-name">Nama Lengkap</label>
+        <input type="text" id="input-name" />
+      </div>
+      <div class="field-group">
+        <label for="input-location">Kota</label>
+        <input type="text" id="input-location" />
+      </div>
+      <div class="field-group">
+        <label for="input-desc">Bio</label>
+        <input type="text" id="input-desc" placeholder="Ceritakan dirimu..." />
+      </div>
+      <button class="btn btn-primary" data-action="save-profile">Simpan Perubahan</button>
+    </div>
+  </section>
+
+  <!-- PAGE: ADD LISTING -->
+  <section id="page-add-listing" class="page-view hidden">
+    <div class="form-page">
+      <button class="btn-ghost" data-action="go-profile">← Kembali</button>
+      <h2>Tambah Barang</h2>
+      <div class="item-photo-upload">
+        <div class="photo-preview" id="item-photo-preview">
+          <span>Klik untuk upload foto</span>
+        </div>
+        <input type="file" id="item-photo-file" accept="image/png,image/jpeg" class="hidden" />
+      </div>
+      <div class="field-group">
+        <label for="add-title">Nama Barang</label>
+        <input type="text" id="add-title" placeholder="Contoh: Tenda Eiger 4P" />
+      </div>
+      <div class="field-group">
+        <label for="add-price">Harga Sewa / Hari (Rp)</label>
+        <input type="number" id="add-price" placeholder="50000" min="0" />
+      </div>
+      <div class="field-group">
+        <label for="add-category">Kategori</label>
+        <select id="add-category">
+          <option value="Tenda">Tenda</option>
+          <option value="Sleeping Bag">Sleeping Bag</option>
+          <option value="Carrier">Carrier</option>
+          <option value="Peralatan Masak">Peralatan Masak</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div id="add-error" class="form-error hidden"></div>
+      <div class="form-actions">
+        <button class="btn btn-outline" data-action="go-profile">Batal</button>
+        <button class="btn btn-primary" data-action="save-listing">Publish →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE: EDIT ITEM -->
+  <section id="page-edit-item" class="page-view hidden">
+    <div class="form-page">
+      <button class="btn-ghost" data-action="go-profile">← Kembali</button>
+      <h2>Edit Barang</h2>
+      <input type="hidden" id="edit-item-id" />
+      <div class="item-photo-upload">
+        <div class="photo-preview" id="edit-photo-preview">
+          <span>Klik untuk ganti foto</span>
+        </div>
+        <input type="file" id="edit-photo-file" accept="image/png,image/jpeg" class="hidden" />
+      </div>
+      <div class="field-group">
+        <label for="edit-title">Nama Barang</label>
+        <input type="text" id="edit-title" />
+      </div>
+      <div class="field-group">
+        <label for="edit-price">Harga Sewa / Hari (Rp)</label>
+        <input type="number" id="edit-price" min="0" />
+      </div>
+      <div class="field-group">
+        <label for="edit-category">Kategori</label>
+        <select id="edit-category">
+          <option value="Tenda">Tenda</option>
+          <option value="Sleeping Bag">Sleeping Bag</option>
+          <option value="Carrier">Carrier</option>
+          <option value="Peralatan Masak">Peralatan Masak</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-outline" data-action="go-profile">Batal</button>
+        <button class="btn btn-primary" data-action="update-listing">Simpan →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE: RENT ITEM -->
+  <section id="page-rent-item" class="page-view hidden">
+    <div class="form-page">
+      <button class="btn-ghost" data-action="go-profile">← Kembali</button>
+      <h2>Sewa Barang</h2>
+      <input type="hidden" id="rent-item-id" />
+      <div id="rent-item-preview" class="rent-preview-card"></div>
+      <div class="field-group">
+        <label for="rent-start">Tanggal Mulai</label>
+        <input type="date" id="rent-start" />
+      </div>
+      <div class="field-group">
+        <label for="rent-duration">Durasi (Hari)</label>
+        <input type="number" id="rent-duration" min="1" value="1" placeholder="1" />
+      </div>
+      <div class="rent-calc" id="rent-calc">
+        <span>Total Estimasi:</span>
+        <strong id="rent-total">Rp 0</strong>
+      </div>
+      <button class="btn btn-primary" data-action="confirm-rent">Konfirmasi Sewa →</button>
+    </div>
+  </section>
+
+  <!-- PAGE: ALL ITEMS (browse to rent) -->
+  <section id="page-browse" class="page-view hidden">
+    <div class="top-bar">
+      <div class="top-bar-brand">R.</div>
+      <button class="btn-ghost" data-action="go-profile">← Profil</button>
+    </div>
+    <div class="section-header">
+      <h2>Semua Barang</h2>
+    </div>
+    <div id="browse-grid" class="item-grid"></div>
+    <div id="browse-empty" class="empty-state hidden">
+      <div class="empty-icon">🏕</div>
+      <p>Belum ada barang tersedia.</p>
+    </div>
+  </section>
+
+  <!-- MODAL: ITEM DETAIL -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal-card">
+      <button class="modal-close" data-action="close-modal">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
